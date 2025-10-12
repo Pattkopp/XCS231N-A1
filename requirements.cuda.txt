@@ -1,5 +1,5 @@
 --find-links https://download.pytorch.org/whl/torch/
-torch==2.7.1+cu126
+torch==2.8.0
 
 --find-links https://download.pytorch.org/whl/torchvision/
 torchvision==0.22.1+cu126
