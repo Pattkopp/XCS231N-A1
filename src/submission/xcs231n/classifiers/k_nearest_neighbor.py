@@ -1,7 +1,7 @@
-from builtins import range
 from builtins import object
+from builtins import range
+
 import numpy as np
-from past.builtins import xrange
 
 
 class KNearestNeighbor(object):
@@ -69,7 +69,7 @@ class KNearestNeighbor(object):
         dists = np.zeros((num_test, num_train))
         for i in range(num_test):
             for j in range(num_train):
-                pass
+
                 #####################################################################
                 # TODO:                                                             #
                 # Compute the l2 distance between the ith test point and the jth    #
@@ -77,6 +77,7 @@ class KNearestNeighbor(object):
                 # not use a loop over dimension, nor use np.linalg.norm().          #
                 #####################################################################
                 # ### START CODE HERE ###
+                dists[i, j] = np.sqrt(np.sum(np.square(self.X_train[j, :] - X[i, :])))
                 # ### END CODE HERE ###
         return dists
 
@@ -91,7 +92,7 @@ class KNearestNeighbor(object):
         num_train = self.X_train.shape[0]
         dists = np.zeros((num_test, num_train))
         for i in range(num_test):
-            pass
+
             #######################################################################
             # TODO:                                                               #
             # Compute the l2 distance between the ith test point and all training #
@@ -99,6 +100,7 @@ class KNearestNeighbor(object):
             # Do not use np.linalg.norm().                                        #
             #######################################################################
             # ### START CODE HERE ###
+            dists[i, :] = np.sqrt(np.sum(np.square(self.X_train - X[i, :]), axis=1))
             # ### END CODE HERE ###
         return dists
 
@@ -127,6 +129,11 @@ class KNearestNeighbor(object):
         #       Use of the fact that (x - y)**2 = x**2 + y**2 - 2*x*y           #
         #########################################################################
         # ### START CODE HERE ###
+        dists = np.sqrt(
+            np.sum(np.square(X), axis=1, keepdims=True)
+            + np.sum(np.square(self.X_train), axis=1)
+            - 2 * np.dot(X, self.X_train.T)
+        )
         # ### END CODE HERE ###
         return dists
 
@@ -157,6 +164,10 @@ class KNearestNeighbor(object):
             # Hint: Look up the function numpy.argsort.                             #
             #########################################################################
             # ### START CODE HERE ###
+            sorted_idx = np.argsort(dists[i, :])
+            closest_idx = sorted_idx[:k]
+            closest_y = self.y_train[closest_idx]
+
             # ### END CODE HERE ###
             #########################################################################
             # TODO:                                                                 #
@@ -166,6 +177,8 @@ class KNearestNeighbor(object):
             # label.                                                                #
             #########################################################################
             # ### START CODE HERE ###
+            counts = np.bincount(closest_y)
+            y_pred[i] = np.argmax(counts)
             # ### END CODE HERE ###
 
         return y_pred
