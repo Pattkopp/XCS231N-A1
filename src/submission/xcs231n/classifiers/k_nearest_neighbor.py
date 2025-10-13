@@ -129,6 +129,11 @@ class KNearestNeighbor(object):
         #       Use of the fact that (x - y)**2 = x**2 + y**2 - 2*x*y           #
         #########################################################################
         # ### START CODE HERE ###
+        dists = np.sqrt(
+            np.sum(np.square(X), axis=1, keepdims=True)
+            + np.sum(np.square(self.X_train), axis=1)
+            - 2 * np.dot(X, self.X_train.T)
+        )
         # ### END CODE HERE ###
         return dists
 
