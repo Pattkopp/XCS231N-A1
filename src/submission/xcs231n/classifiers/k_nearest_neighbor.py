@@ -1,7 +1,7 @@
-from builtins import range
 from builtins import object
+from builtins import range
+
 import numpy as np
-from past.builtins import xrange
 
 
 class KNearestNeighbor(object):
@@ -69,7 +69,7 @@ class KNearestNeighbor(object):
         dists = np.zeros((num_test, num_train))
         for i in range(num_test):
             for j in range(num_train):
-                pass
+
                 #####################################################################
                 # TODO:                                                             #
                 # Compute the l2 distance between the ith test point and the jth    #
@@ -77,6 +77,7 @@ class KNearestNeighbor(object):
                 # not use a loop over dimension, nor use np.linalg.norm().          #
                 #####################################################################
                 # ### START CODE HERE ###
+                dists[i, j] = np.sqrt(np.sum(np.square(self.X_train[j, :] - X[i, :])))
                 # ### END CODE HERE ###
         return dists
 
