@@ -41,6 +41,11 @@ def softmax_loss_naive(W, X, y, reg):
         loss -= logp[y[i]]  # negative log probability is the loss
 
         # ### START CODE HERE ###
+        for j in range(num_classes):
+            if j == y[i]:
+                dW[:, j] += (p[j] - 1) * X[i]
+            else:
+                dW[:, j] += p[j] * X[i]
         # ### END CODE HERE ###
 
     # normalized hinge loss plus regularization
