@@ -60,6 +60,8 @@ def softmax_loss_naive(W, X, y, reg):
     # code above to compute the gradient.                                       #
     #############################################################################
     # ### START CODE HERE ###
+    dW /= num_train
+    dW += 2 * reg * W
     # ### END CODE HERE ###
 
     return loss, dW
