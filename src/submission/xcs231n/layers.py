@@ -27,6 +27,8 @@ def affine_forward(x, w, b):
     # will need to reshape the input into rows.                               #
     ###########################################################################
     # ### START CODE HERE ###
+    x_reshaped = x.reshape(x.shape[0], -1)
+    out = x_reshaped.dot(w) + b
     # ### END CODE HERE ###
     ###########################################################################
     #                             END OF YOUR CODE                            #
@@ -57,6 +59,9 @@ def affine_backward(dout, cache):
     # TODO: Implement the affine backward pass.                               #
     ###########################################################################
     # ### START CODE HERE ###
+    dx = dout.dot(w.T).reshape(x.shape)
+    dw = x.reshape(x.shape[0], -1).T.dot(dout)
+    db = np.sum(dout, axis=0)
     # ### END CODE HERE ###
     ###########################################################################
     #                             END OF YOUR CODE                            #
@@ -80,6 +85,7 @@ def relu_forward(x):
     # TODO: Implement the ReLU forward pass.                                  #
     ###########################################################################
     # ### START CODE HERE ###
+    out = np.maximum(0, x)
     # ### END CODE HERE ###
     ###########################################################################
     #                             END OF YOUR CODE                            #
@@ -104,6 +110,8 @@ def relu_backward(dout, cache):
     # TODO: Implement the ReLU backward pass.                                 #
     ###########################################################################
     # ### START CODE HERE ###
+    dx = dout
+    dx[x <= 0] = 0
     # ### END CODE HERE ###
     ###########################################################################
     #                             END OF YOUR CODE                            #
@@ -741,6 +749,15 @@ def softmax_loss(x, y):
     # TODO: Copy over your solution from A1.
     ###########################################################################
     # ### START CODE HERE ###
+    N = x.shape[0]
+    shifted_logits = x - np.max(x, axis=1, keepdims=True)
+    exp_scores = np.exp(shifted_logits)
+    probs = exp_scores / np.sum(exp_scores, axis=1, keepdims=True)
+    correct_class_probs = probs[np.arange(N), y]
+    loss = -np.sum(np.log(correct_class_probs)) / N
+    dx = probs.copy()
+    dx[np.arange(N), y] -= 1
+    dx /= N
     # ### END CODE HERE ###
     ###########################################################################
     #                             END OF YOUR CODE                            #
