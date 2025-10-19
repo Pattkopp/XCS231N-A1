@@ -328,6 +328,8 @@ class FullyConnectedNet(object):
         for i in range(self.num_layers):
             loss += 0.5 * self.reg * np.sum(self.params[f"W{i+1}"] ** 2)
         dh, grads[f"W{self.num_layers}"], grads[f"b{self.num_layers}"] = affine_backward(dscores, caches.pop())
+        grads[f"W{self.num_layers}"] += self.reg * self.params[f"W{self.num_layers}"]
+
         for i in range(self.num_layers - 1, 0, -1):
             if self.use_dropout:
                 dh = dropout_backward(dh, caches.pop())
