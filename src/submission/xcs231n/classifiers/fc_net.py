@@ -213,6 +213,11 @@ class FullyConnectedNet(object):
         # parameters should be initialized to zeros.                               #
         ############################################################################
         # ### START CODE HERE ###
+        layer_dims = [input_dim] + hidden_dims + [num_classes]
+
+        for i in range(self.num_layers):
+            self.params[f"W{i+1}"] = np.random.normal(0, weight_scale, (layer_dims[i], layer_dims[i+1]))
+            self.params[f"b{i+1}"] = np.zeros(layer_dims[i+1])
         # ### END CODE HERE ###
         ############################################################################
         #                             END OF YOUR CODE                             #
@@ -284,6 +289,17 @@ class FullyConnectedNet(object):
         # layer, etc.                                                              #
         ############################################################################
         # ### START CODE HERE ###
+        h = X
+        caches = []
+        for i in range(self.num_layers - 1):
+            h, cache = affine_relu_forward(h, self.params[f"W{i+1}"], self.params[f"b{i+1}"])
+            caches.append(cache)
+            if self.use_dropout:
+                h, cache = dropout_forward(h, self.dropout_param)
+                caches.append(cache)
+        scores, cache = affine_forward(h, self.params[f"W{self.num_layers}"], self.params[f"b{self.num_layers}"])
+        caches.append(cache)
+
         # ### END CODE HERE ###
         ############################################################################
         #                             END OF YOUR CODE                             #
@@ -308,6 +324,16 @@ class FullyConnectedNet(object):
         # of 0.5 to simplify the expression for the gradient.                      #
         ############################################################################
         # ### START CODE HERE ###
+        loss, dscores = softmax_loss(scores, y)
+        for i in range(self.num_layers):
+            loss += 0.5 * self.reg * np.sum(self.params[f"W{i+1}"] ** 2)
+        dh, grads[f"W{self.num_layers}"], grads[f"b{self.num_layers}"] = affine_backward(dscores, caches.pop())
+        for i in range(self.num_layers - 1, 0, -1):
+            if self.use_dropout:
+                dh = dropout_backward(dh, caches.pop())
+            dh, grads[f"W{i}"], grads[f"b{i}"] = affine_relu_backward(dh, caches.pop())
+            grads[f"W{i}"] += self.reg * self.params[f"W{i}"]
+
         # ### END CODE HERE ###
         ############################################################################
         #                             END OF YOUR CODE                             #
