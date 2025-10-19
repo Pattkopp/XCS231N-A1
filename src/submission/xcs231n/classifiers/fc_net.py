@@ -333,7 +333,6 @@ class FullyConnectedNet(object):
                 dh = dropout_backward(dh, caches.pop())
             dh, grads[f"W{i}"], grads[f"b{i}"] = affine_relu_backward(dh, caches.pop())
             grads[f"W{i}"] += self.reg * self.params[f"W{i}"]
-            grads[f"b{i}"] += self.reg * self.params[f"b{i}"]
 
         # ### END CODE HERE ###
         ############################################################################
